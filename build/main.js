@@ -121852,7 +121852,7 @@
 
     viewer.context.ifcCamera.cameraControls;
 
-    viewer.IFC.loader.ifcManager;
+    const manager = viewer.IFC.loader.ifcManager;
 
 
 
@@ -121953,34 +121953,17 @@
     window.onclick = async () => {
         const result = await viewer.IFC.selector.pickIfcItem(false);
         if (!result) return;
-        const { modelID, id } = result;
-        const props = await viewer.IFC.getProperties(modelID, id, true, false);
-
-        const elem = document.getElementById('side-menu-right');
-        elem.innerHTML = `<div> <h2>${props["Name"].value}</h2></div>`;
-        console.log(props);
-        console.log(props["Name"].value);
-        
-
-        const modeID = viewer.IFC.getModelID();
-           
-        var c = await viewer.IFC.loader.ifcManager.getAllItemsOfType(modeID,IFCFURNISHINGELEMENT);
-        console.log(c);
-        const managr = viewer.IFC.loader.ifcManager;
+        const { modelID } = result;
+        var tables = await viewer.IFC.loader.ifcManager.getAllItemsOfType(modelID,IFCFURNISHINGELEMENT);
         const config = {
-          modelID: modeID,
-          ids: c,
-          customID:"stuff"
-      };
+          modelID: modelID,
+          ids: tables,
+          customID:"tables"
+        };
 
-
-    managr.createSubset(config);
-    console.log("subsets",viewer.IFC.loader.ifcManager.subsets);
-
-     
-    var mesh = managr.getSubset("stuff");
-
-    console.log(mesh);
+      manager.createSubset(config);
+      var subset = manager.getSubset(modelID,"tables");
+      console.log(subset);
     };
 
     window.ondblclick = async () => {
